@@ -2,14 +2,18 @@
 FROM node:18 AS builder
 WORKDIR /app
 
+COPY package*.json ./
+
 # Install git
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+# Install dependencies and build
+RUN npm install
 
 # Clone GitHub repo
 RUN git clone -b main https://github.com/mkr3295/App-Kubernetes.git .
 
-# Install dependencies and build
-RUN npm ci
+#  build
 ENV NODE_ENV=production
 RUN npm run build
 
