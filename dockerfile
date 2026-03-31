@@ -1,0 +1,26 @@
+# Stage 1: Build React app
+FROM node:18 AS builder
+
+WORKDIR /app
+
+# Install git
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+# Clone GitHub repo
+#RUN git clone https://github.com/<your-username>/react-k8s-app.git .
+
+#For local build
+COPY . .
+
+# Install dependencies and build
+RUN npm install
+RUN npm run build
+
+# Stage 2: Serve with Nginx
+FROM nginx:alpine
+
+COPY --from=builder /app/build /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
