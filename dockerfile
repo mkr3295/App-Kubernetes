@@ -1,19 +1,17 @@
 # Stage 1: Build React app
 FROM node:18 AS builder
-WORKDIR /app
 
-COPY package*.json ./
+WORKDIR /app
 
 # Install git
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies and build
-RUN npm install
-
-# Clone GitHub repo
+# Ensure /app is empty, then clone
+RUN rm -rf /app/*
 RUN git clone -b main https://github.com/mkr3295/App-Kubernetes.git .
 
-#  build
+# Install dependencies and build
+RUN npm install
 ENV NODE_ENV=production
 RUN npm run build
 
